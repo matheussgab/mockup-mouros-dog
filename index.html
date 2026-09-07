@@ -42,23 +42,18 @@
   #menu, #lojas, #sobre { scroll-margin-top: 118px; }
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
-  /* Mascote flutuando no canto inferior direito. pointer-events:none para
-     nao roubar cliques do que estiver embaixo. z-index abaixo da barra de
-     pedido (40), das gavetas (50/55) e da faixa do topo (45). */
+  /* Mascote parado no canto inferior direito: a unica animacao e' a do gif,
+     disparada ao adicionar um item. pointer-events:none para nao roubar
+     cliques do que estiver embaixo. z-index abaixo da barra de pedido (40),
+     das gavetas (50/55) e da faixa do topo (45). */
   .mascot {
     position: fixed; right: 20px; bottom: 18px; z-index: 35;
     width: 108px; pointer-events: none;
-    animation: mascot-float 3.6s ease-in-out infinite;
   }
   .mascot-img {
     width: 100%; height: auto;
     filter: drop-shadow(0 12px 14px rgba(20, 6, 6, 0.5));
   }
-  @keyframes mascot-float {
-    0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(-8px); }
-  }
-  @media (prefers-reduced-motion: reduce) { .mascot { animation: none; } }
 
   /* Trilhos com rolagem lateral (nav e filtros) sem barra visivel. */
   .scroll-x { scrollbar-width: none; -ms-overflow-style: none; }
