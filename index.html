@@ -329,14 +329,16 @@
        vazias). Ao adicionar um item o gif e' montado no lugar e roda uma vez;
        como o gif fica em loop no navegador, ele e' desmontado ao fim da
        animacao, senao ficaria repetindo para sempre. -->
-  <div class="mascot" aria-hidden="true">
-    <sc-if value="{{ mascotIdle }}" hint-placeholder-val="{{ true }}">
-      <img class="mascot-img mascot-idle" src="assets/mouros_standby.png" alt="" />
-    </sc-if>
-    <sc-if value="{{ mascotPlaying }}" hint-placeholder-val="{{ false }}">
-      <img class="mascot-img mascot-play" src="assets/mouros_animado_v2.gif" alt="" />
-    </sc-if>
-  </div>
+  <sc-if value="{{ hasItems }}" hint-placeholder-val="{{ true }}">
+    <div class="mascot" aria-hidden="true">
+      <sc-if value="{{ mascotIdle }}" hint-placeholder-val="{{ true }}">
+        <img class="mascot-img mascot-idle" src="assets/mouros_standby.png" alt="" />
+      </sc-if>
+      <sc-if value="{{ mascotPlaying }}" hint-placeholder-val="{{ false }}">
+        <img class="mascot-img mascot-play" src="{{ mascotSrc }}" alt="" />
+      </sc-if>
+    </div>
+  </sc-if>
 
   <sc-if value="{{ navOpen }}" hint-placeholder-val="{{ false }}">
     <div style="position:fixed;inset:0;z-index:55;display:flex;justify-content:flex-start">
@@ -480,6 +482,8 @@ const MENU = [
   { id: 'a3', cat: 'Adicionais', name: 'Bacon', price: 4, img: null, desc: 'Adicional.' }
 ];
 
+const MASCOT_GIF = 'assets/mouros_animado_v2.gif';
+
 const fmt = (n) => 'R$ ' + n.toFixed(2).replace('.', ',');
 
 class Component extends DCLogic {
@@ -489,13 +493,35 @@ class Component extends DCLogic {
   // segura 500ms). Desmonta um pouco antes do fim para nao deixar o loop
   // reiniciar visivelmente.
   mascotTimer = null;
+  mascotBlob = null;
+  mascotUrl = null;
+
+  componentDidMount() {
+    // Baixa o gif uma vez e guarda como Blob. Sem isso ele so seria buscado
+    // no primeiro clique: no celular os 728KB podem nao chegar dentro da
+    // janela de 2.2s da animacao, e o mascote parecia nao rodar nada.
+    fetch(MASCOT_GIF)
+      .then((r) => (r.ok ? r.blob() : null))
+      .then((b) => { this.mascotBlob = b; })
+      .catch(() => {});
+  }
 
   playMascot() {
     if (this.mascotTimer) clearTimeout(this.mascotTimer);
-    // desmonta e remonta: um <img> novo reinicia o gif do primeiro quadro,
-    // mesmo quando o clique acontece com a animacao ja rodando.
+    const anterior = this.mascotUrl;
+    // Uma URL nova a cada disparo. Remontar o <img> com a mesma src nao
+    // reinicia um gif ja cacheado nos navegadores de celular; com objectURL
+    // o recurso e' outro, entao a animacao sempre parte do primeiro quadro,
+    // e sem custo de rede porque sai do Blob que ja esta na memoria.
+    // Se o Blob ainda nao chegou: no primeiro disparo usa a url limpa, que
+    // aproveita o download ja em curso e anima normalmente por ser a estreia
+    // da imagem. So a partir do segundo e' preciso furar o cache.
+    this.mascotUrl = this.mascotBlob
+      ? URL.createObjectURL(this.mascotBlob)
+      : (anterior ? MASCOT_GIF + '?t=' + Date.now() : MASCOT_GIF);
     this.setState({ mascot: false });
     setTimeout(() => {
+      if (anterior && anterior.indexOf('blob:') === 0) URL.revokeObjectURL(anterior);
       this.setState({ mascot: true });
       this.mascotTimer = setTimeout(() => this.setState({ mascot: false }), 2200);
     }, 30);
@@ -616,6 +642,7 @@ class Component extends DCLogic {
         label: n.label, href: n.href,
         go: () => this.setState(n.cat ? { cat: n.cat, navOpen: false } : { navOpen: false })
       })),
+      mascotSrc: this.mascotUrl || MASCOT_GIF,
       mascotIdle: !this.state.mascot,
       mascotPlaying: this.state.mascot,
       navOpen: this.state.navOpen,
