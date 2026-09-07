@@ -24,6 +24,24 @@
   /* Barra de pedido fixa: existe apenas no celular. */
   .mob-bar { display: none; }
 
+  /* Cabecalho que acompanha a rolagem: as abas ficam sempre a vista. */
+  .header-bar {
+    position: sticky; top: 0; z-index: 45;
+    background: rgba(92, 11, 11, 0.92);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(252, 246, 224, 0.14);
+  }
+  /* Sem suporte a blur o fundo precisa ser opaco, senao o texto se mistura. */
+  @supports not ((backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px))) {
+    .header-bar { background: #5C0B0B; }
+  }
+
+  /* Rolagem suave nos links do menu, com folga para o cabecalho fixo. */
+  html { scroll-behavior: smooth; }
+  #menu, #lojas, #sobre { scroll-margin-top: 118px; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
   /* Trilhos com rolagem lateral (nav e filtros) sem barra visivel. */
   .scroll-x { scrollbar-width: none; -ms-overflow-style: none; }
   .scroll-x::-webkit-scrollbar { display: none; }
@@ -35,6 +53,11 @@
      -------------------------------------------------------------- */
   @media (max-width: 720px) {
     .pad-x { padding-left: 16px !important; padding-right: 16px !important; }
+
+    /* No celular o cabecalho tem duas linhas (~110px). Fixo, comeria 13% da
+       tela em cada rolagem; o atalho do pedido ja vive na barra de baixo. */
+    .header-bar { position: static; backdrop-filter: none; -webkit-backdrop-filter: none; }
+    #menu, #lojas, #sobre { scroll-margin-top: 12px; }
 
     .site-header { padding: 14px 16px !important; gap: 10px !important; }
     .brand { order: 1; padding: 5px 9px !important; }
@@ -92,25 +115,27 @@
 </helmet>
 <div style="background:#5C0B0B;color:#FCF6E0;min-height:100%;padding:0 0 0 0">
 
+  <div class="header-bar">
   <header class="site-header" style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;padding:18px 28px;max-width:1240px;margin:0 auto">
     <div class="brand" style="background:#FCF6E0;border-radius:12px;padding:7px 12px;display:flex;align-items:center">
       <img src="assets/logo-no-background.png" alt="Mouro's Dog" class="brand-img" style="height:52px;width:auto" />
     </div>
     <nav class="site-nav scroll-x" style="display:flex;gap:22px;flex-wrap:wrap;font-size:12.5px;letter-spacing:0.12em;font-weight:600;text-transform:uppercase">
       <a href="#menu" style="color:#FCF6E0">Menu</a>
-      <a href="#especiais" style="color:#FCF6E0">Especiais</a>
+      <a href="#menu" onClick="{{ pickEspeciais }}" style="color:#FCF6E0">Especiais</a>
       <a href="#sobre" style="color:#FCF6E0">Sobre</a>
       <a href="#lojas" style="color:#FCF6E0">Lojas</a>
     </nav>
     <div class="header-spacer" style="flex:1 1 40px"></div>
     <div class="header-meta" style="font-size:11.5px;letter-spacing:0.1em;line-height:1.6;text-transform:uppercase;opacity:0.82;max-width:220px">
-      Porto Alegre &middot; RS<br />4 lojas &middot; desde 2013
+      Porto Alegre &middot; RS<br />3 lojas &middot; desde 2013
     </div>
     <button class="cart-btn" onClick="{{ openCart }}" style="border:0;cursor:pointer;background:#FCF6E0;color:#2A1207;border-radius:999px;padding:12px 20px;font-family:inherit;font-size:12px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;display:flex;align-items:center;gap:10px" style-hover="background:#C9F24D">
       <span>Meu pedido</span>
       <span style="background:#5C0B0B;color:#FCF6E0;border-radius:999px;min-width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px">{{ cartCount }}</span>
     </button>
   </header>
+  </div>
 
   <section class="pad-x" style="max-width:1240px;margin:0 auto;padding:10px 28px 0">
     <div class="hero-grid" style="display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,0.85fr);gap:28px;align-items:center">
@@ -128,7 +153,7 @@
       <span style="font-size:12.5px;opacity:0.72">o pedido vai para o WhatsApp dessa unidade</span>
     </div>
     <div class="stores-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px">
-      <sc-for list="{{ stores }}" as="s" hint-placeholder-count="4">
+      <sc-for list="{{ stores }}" as="s" hint-placeholder-count="3">
         <button onClick="{{ s.pick }}" style="{{ s.cardStyle }}" style-hover="border-color:#C9F24D">
           <div style="display:flex;align-items:center;gap:9px;margin-bottom:10px">
             <span style="{{ s.dotStyle }}"></span>
@@ -144,7 +169,7 @@
   <section id="menu" class="pad-x section-gap" style="max-width:1240px;margin:0 auto;padding:44px 28px 0">
     <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:18px">
       <span style="font-size:11.5px;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;background:#E8940D;color:#2A1207;border-radius:999px;padding:6px 12px">2</span>
-      <h3 id="especiais" style="margin:0;font-size:clamp(20px,2.6vw,30px);font-weight:900;font-stretch:115%;text-transform:uppercase">Monte seu pedido</h3>
+      <h3 style="margin:0;font-size:clamp(20px,2.6vw,30px);font-weight:900;font-stretch:115%;text-transform:uppercase">Monte seu pedido</h3>
     </div>
     <div class="cat-row scroll-x" style="display:flex;gap:9px;flex-wrap:wrap;margin-bottom:24px">
       <sc-for list="{{ cats }}" as="c" hint-placeholder-count="5">
@@ -223,7 +248,7 @@
     <div class="split-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:28px;align-items:start">
       <h3 style="margin:0;font-size:clamp(28px,4.4vw,58px);line-height:0.92;font-weight:900;font-stretch:120%;text-transform:uppercase;text-wrap:balance">A identidade do cachorro-quente aberto</h3>
       <div style="font-size:14.5px;line-height:1.7;opacity:0.88;display:flex;flex-direction:column;gap:14px">
-        <p style="margin:0">O Mouro's Dog atua em Porto Alegre desde 2013 e hoje são quatro lojas na cidade. Servimos cachorro-quente aberto com um cardápio que vai da salsicha tradicional ao strogonoff.</p>
+        <p style="margin:0">O Mouro's Dog atua em Porto Alegre desde 2013 e hoje são três lojas na cidade. Servimos cachorro-quente aberto com um cardápio que vai da salsicha tradicional ao strogonoff.</p>
         <p style="margin:0">Uma equipe preparada, produto de qualidade e aquele lugar pra sentar com a família e os amigos. É comida de verdade, feita pra satisfazer.</p>
         <div style="display:flex;gap:10px;flex-wrap:wrap;padding-top:4px">
           <a href="https://www.instagram.com/mourosdog" target="_blank" rel="noopener" style="border:1px solid rgba(252,246,224,0.35);color:#FCF6E0;border-radius:999px;padding:9px 16px;font-size:12px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase">Instagram</a>
@@ -256,7 +281,7 @@
         </div>
         <div style="font-size:12.5px;line-height:1.65;opacity:0.75">Cachorro-quente aberto<br />Porto Alegre &middot; RS<br />Desde 2013</div>
       </div>
-      <sc-for list="{{ stores }}" as="s" hint-placeholder-count="4">
+      <sc-for list="{{ stores }}" as="s" hint-placeholder-count="3">
         <div>
           <div style="font-size:11.5px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:#E8940D;margin-bottom:10px">{{ s.name }}</div>
           <div style="font-size:12.5px;line-height:1.65;opacity:0.8">{{ s.addr }}</div>
@@ -332,8 +357,7 @@
 const STORES = [
   { id: 'santana', name: 'Santana', addr: 'Av. Jerônimo de Ornelas, 357 — Bairro Santana, Zona Central', phones: '51 3207.9715 · 51 98682.1414', wa: '5551986821414', delivery: 'https://zapdelivery.me/mourosdogsantana' },
   { id: 'otto', name: 'Otto Niemeyer', addr: 'Av. Otto Niemeyer, 2085 — Bairro Tristeza, Zona Sul', phones: '51 3110.5254 · 51 98420.6181', wa: '5551984206181', delivery: 'https://zapdelivery.me/mourosdogotto' },
-  { id: 'lindoia', name: 'Jardim Lindóia', addr: 'Av. Panamericana, 795 — Jardim Lindóia, Zona Norte', phones: '51 3207.9007 · 51 99372.6582', wa: '5551993726582', delivery: 'https://zapdelivery.me/mourosdoglindoia' },
-  { id: 'edgar', name: 'Edgar Pires (sorvetes)', addr: 'Av. Edgar Pires de Castro, 1940, loja 1 — Aberta dos Morros, Zona Sul', phones: '51 3779.1515 · 51 98610.1515', wa: '5551986101515', delivery: 'https://zapdelivery.me/mourosdogedgar' }
+  { id: 'lindoia', name: 'Jardim Lindóia', addr: 'Av. Panamericana, 795 — Jardim Lindóia, Zona Norte', phones: '51 3207.9007 · 51 99372.6582', wa: '5551993726582', delivery: 'https://zapdelivery.me/mourosdoglindoia' }
 ];
 
 const CATS = ['Tradicionais', 'Especiais', 'Veggie', 'Porções', 'Bebidas'];
@@ -493,6 +517,7 @@ class Component extends DCLogic {
       checkoutLabel: ids.length === 0 ? 'Adicione um item' : (sel ? 'Enviar pedido no WhatsApp' : 'Escolha a loja primeiro'),
       checkoutStyle: 'border:0;width:100%;border-radius:999px;padding:16px;font-family:inherit;font-size:13px;font-weight:900;letter-spacing:0.1em;text-transform:uppercase;cursor:' + (ids.length ? 'pointer' : 'default') + ';background:' + (ready ? '#1EA34B' : (ids.length ? '#E8940D' : 'rgba(42,18,7,0.16)')) + ';color:' + (ids.length ? (ready ? '#fff' : '#2A1207') : 'rgba(42,18,7,0.5)'),
       checkout: this.checkout,
+      pickEspeciais: () => this.setState({ cat: 'Especiais' }),
       openCart: () => this.setState({ cartOpen: true }),
       closeCart: () => this.setState({ cartOpen: false }),
       setNote: (e) => this.setState({ note: e.target.value })
