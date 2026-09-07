@@ -42,6 +42,24 @@
   #menu, #lojas, #sobre { scroll-margin-top: 118px; }
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
+  /* Mascote flutuando no canto inferior direito. pointer-events:none para
+     nao roubar cliques do que estiver embaixo. z-index abaixo da barra de
+     pedido (40), das gavetas (50/55) e da faixa do topo (45). */
+  .mascot {
+    position: fixed; right: 20px; bottom: 18px; z-index: 35;
+    width: 108px; pointer-events: none;
+    animation: mascot-float 3.6s ease-in-out infinite;
+  }
+  .mascot-img {
+    width: 100%; height: auto;
+    filter: drop-shadow(0 12px 14px rgba(20, 6, 6, 0.5));
+  }
+  @keyframes mascot-float {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-8px); }
+  }
+  @media (prefers-reduced-motion: reduce) { .mascot { animation: none; } }
+
   /* Trilhos com rolagem lateral (nav e filtros) sem barra visivel. */
   .scroll-x { scrollbar-width: none; -ms-overflow-style: none; }
   .scroll-x::-webkit-scrollbar { display: none; }
@@ -108,6 +126,12 @@
 
     .section-gap { padding-top: 34px !important; }
     .cta-box { padding: 26px 18px !important; }
+
+    /* Menor e acima da barra de pedido, para nao cobrir o total nem o botao.
+       Em 390px nao existe margem livre: parado ele cobriria o texto, entao
+       no celular so aparece durante a animacao do "adicionar". */
+    .mascot { width: 76px; right: 10px; bottom: 88px; }
+    .mascot-idle { display: none !important; }
 
     .mob-bar { display: flex !important; }
     /* Espaco para a barra fixa nao cobrir o rodape. */
@@ -306,6 +330,19 @@
     </div>
   </footer>
 
+  <!-- Mascote no canto. Em repouso e' um PNG (quadro 0 do gif: em pe, maos
+       vazias). Ao adicionar um item o gif e' montado no lugar e roda uma vez;
+       como o gif fica em loop no navegador, ele e' desmontado ao fim da
+       animacao, senao ficaria repetindo para sempre. -->
+  <div class="mascot" aria-hidden="true">
+    <sc-if value="{{ mascotIdle }}" hint-placeholder-val="{{ true }}">
+      <img class="mascot-img mascot-idle" src="assets/mouros_standby.png" alt="" />
+    </sc-if>
+    <sc-if value="{{ mascotPlaying }}" hint-placeholder-val="{{ false }}">
+      <img class="mascot-img mascot-play" src="assets/mouros_animado.gif" alt="" />
+    </sc-if>
+  </div>
+
   <sc-if value="{{ navOpen }}" hint-placeholder-val="{{ false }}">
     <div style="position:fixed;inset:0;z-index:55;display:flex;justify-content:flex-start">
       <div onClick="{{ closeNav }}" style="position:absolute;inset:0;background:rgba(20,6,6,0.62)"></div>
@@ -432,14 +469,14 @@ const MENU = [
   { id: 'b2', cat: 'Bebidas', name: 'Refri 600 ml', price: 8, img: 'assets/refri-600.jpeg', desc: 'Coca-Cola, Coca Zero, Fanta Laranja, Sprite ou Guaraná Kuat.' },
   { id: 'b3', cat: 'Bebidas', name: 'Refri 2 Litros', price: 15, img: 'assets/refri-2l.jpeg', desc: 'Coca-Cola, Coca Zero, Fanta Uva, Fanta Laranja, Sprite ou Guaraná Kuat.' },
   { id: 'b4', cat: 'Bebidas', name: 'Suco Lata Del Valle', price: 6, img: 'assets/del-valle-lata.jpeg', desc: 'Uva ou pêssego.' },
-  { id: 'b5', cat: 'Bebidas', name: 'Água Mineral', price: 4, img: null, desc: 'Com ou sem gás.' },
+  { id: 'b5', cat: 'Bebidas', name: 'Água Mineral', price: 4, img: 'assets/agua-mineral.jpeg', desc: 'Com ou sem gás.' },
   { id: 'b6', cat: 'Bebidas', name: 'Skol Latão', price: 8.5, img: 'assets/skol.jpeg', desc: 'Cerveja 473ml.', alcohol: true },
   { id: 'b7', cat: 'Bebidas', name: 'Polar Latão', price: 8.5, img: 'assets/polar.jpeg', desc: 'Cerveja 473ml.', alcohol: true },
   { id: 'b8', cat: 'Bebidas', name: 'Heineken Long Neck', price: 14, img: 'assets/heineken-long.jpeg', desc: 'Cerveja 330ml.', alcohol: true },
   { id: 'b9', cat: 'Bebidas', name: 'Budweiser Long Neck', price: 10, img: 'assets/budweiser-long.jpeg', desc: 'Cerveja 330ml.', alcohol: true },
-  { id: 'b10', cat: 'Bebidas', name: 'Budweiser 550ml', price: 14, img: null, desc: 'Cerveja garrafa.', alcohol: true },
+  { id: 'b10', cat: 'Bebidas', name: 'Budweiser 550ml', price: 14, img: 'assets/budweiser-550.jpeg', desc: 'Cerveja garrafa.', alcohol: true },
   { id: 'b11', cat: 'Bebidas', name: 'Amstel 600ml', price: 14, img: 'assets/amstel-600.jpeg', desc: 'Cerveja garrafa.', alcohol: true },
-  { id: 'b12', cat: 'Bebidas', name: 'Brahma Duplo Malte 600ml', price: 14, img: null, desc: 'Cerveja garrafa.', alcohol: true },
+  { id: 'b12', cat: 'Bebidas', name: 'Brahma Duplo Malte 600ml', price: 14, img: 'assets/brahma-duplo-600.jpeg', desc: 'Cerveja garrafa.', alcohol: true },
   { id: 'b13', cat: 'Bebidas', name: 'Original 600ml', price: 18, img: 'assets/original-600.jpg', desc: 'Cerveja garrafa.', alcohol: true },
   { id: 'b14', cat: 'Bebidas', name: 'Heineken 600ml', price: 18, img: 'assets/heineken-600.webp', desc: 'Cerveja garrafa.', alcohol: true },
 
@@ -451,7 +488,22 @@ const MENU = [
 const fmt = (n) => 'R$ ' + n.toFixed(2).replace('.', ',');
 
 class Component extends DCLogic {
-  state = { store: null, cat: 'Tradicionais', cart: {}, cartOpen: false, navOpen: false, note: '' };
+  state = { store: null, cat: 'Tradicionais', cart: {}, cartOpen: false, navOpen: false, note: '', mascot: false };
+
+  // Duracao real do gif: soma dos 33 atrasos = 1880ms. Desmonta um pouco
+  // antes do fim para nao deixar o loop reiniciar visivelmente.
+  mascotTimer = null;
+
+  playMascot() {
+    if (this.mascotTimer) clearTimeout(this.mascotTimer);
+    // desmonta e remonta: um <img> novo reinicia o gif do primeiro quadro,
+    // mesmo quando o clique acontece com a animacao ja rodando.
+    this.setState({ mascot: false });
+    setTimeout(() => {
+      this.setState({ mascot: true });
+      this.mascotTimer = setTimeout(() => this.setState({ mascot: false }), 1850);
+    }, 30);
+  }
 
   // Rola ate uma secao descontando a faixa fixa, que so existe no desktop.
   scrollToId(id) {
@@ -463,6 +515,7 @@ class Component extends DCLogic {
   }
 
   bump(id, d) {
+    if (d > 0) this.playMascot();
     this.setState((s) => {
       const cart = Object.assign({}, s.cart);
       const q = (cart[id] || 0) + d;
@@ -567,6 +620,8 @@ class Component extends DCLogic {
         label: n.label, href: n.href,
         go: () => this.setState(n.cat ? { cat: n.cat, navOpen: false } : { navOpen: false })
       })),
+      mascotIdle: !this.state.mascot,
+      mascotPlaying: this.state.mascot,
       navOpen: this.state.navOpen,
       openNav: () => this.setState({ navOpen: true }),
       closeNav: () => this.setState({ navOpen: false }),
