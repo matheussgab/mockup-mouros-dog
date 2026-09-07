@@ -334,7 +334,7 @@
       <img class="mascot-img mascot-idle" src="assets/mouros_standby.png" alt="" />
     </sc-if>
     <sc-if value="{{ mascotPlaying }}" hint-placeholder-val="{{ false }}">
-      <img class="mascot-img mascot-play" src="assets/mouros_animado.gif" alt="" />
+      <img class="mascot-img mascot-play" src="assets/mouros_animado_v2.gif" alt="" />
     </sc-if>
   </div>
 
@@ -485,8 +485,9 @@ const fmt = (n) => 'R$ ' + n.toFixed(2).replace('.', ',');
 class Component extends DCLogic {
   state = { store: null, cat: 'Tradicionais', cart: {}, cartOpen: false, navOpen: false, note: '', mascot: false };
 
-  // Duracao real do gif: soma dos 33 atrasos = 1880ms. Desmonta um pouco
-  // antes do fim para nao deixar o loop reiniciar visivelmente.
+  // Duracao real do gif: soma dos 36 atrasos = 2250ms (o ultimo quadro
+  // segura 500ms). Desmonta um pouco antes do fim para nao deixar o loop
+  // reiniciar visivelmente.
   mascotTimer = null;
 
   playMascot() {
@@ -496,7 +497,7 @@ class Component extends DCLogic {
     this.setState({ mascot: false });
     setTimeout(() => {
       this.setState({ mascot: true });
-      this.mascotTimer = setTimeout(() => this.setState({ mascot: false }), 1850);
+      this.mascotTimer = setTimeout(() => this.setState({ mascot: false }), 2200);
     }, 30);
   }
 
