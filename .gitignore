@@ -1,0 +1,10 @@
+# Artefatos de origem nao referenciados pela pagina (ficam so no disco local)
+sheet.png
+uploads/
+.thumbnail
+
+# Sistema / editor
+.DS_Store
+Thumbs.db
+node_modules/
+.vercel
