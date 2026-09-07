@@ -65,20 +65,26 @@
     .header-spacer { order: 2; }
     .cart-btn { order: 2; padding: 10px 15px !important; font-size: 11px !important; }
     .header-meta { display: none !important; }
-    .site-nav {
-      order: 3; width: 100%; flex-wrap: nowrap !important;
-      overflow-x: auto; gap: 20px !important; padding-bottom: 2px;
-    }
-    .site-nav a { flex: 0 0 auto; }
+    /* Os links viram gaveta lateral; no lugar deles fica o botao de 3 pontos.
+       Com isso o cabecalho volta a ser uma linha so. */
+    .site-nav { display: none !important; }
+    .nav-toggle { display: flex !important; order: 0; }
 
     .hero-grid { grid-template-columns: 1fr !important; gap: 20px !important; }
     .hero-title { font-size: clamp(40px, 12.2vw, 66px) !important; }
 
-    /* Filtros viram trilho horizontal em vez de quebrar em 3 linhas. */
+    /* Filtros viram trilho horizontal em vez de quebrar em 3 linhas, e grudam
+       no topo enquanto a secao do cardapio esta na tela: ao escolher produtos
+       as categorias ficam sempre a vista. O sticky se solta sozinho ao sair
+       da secao, porque o ancestral de referencia e' o proprio #menu. */
     .cat-row {
+      position: sticky; top: 0; z-index: 30;
+      background: #5C0B0B;
+      box-shadow: 0 10px 14px -9px rgba(20, 6, 6, 0.95);
       flex-wrap: nowrap !important; overflow-x: auto;
       margin-left: -16px !important; margin-right: -16px !important;
-      padding: 0 16px 2px !important;
+      padding: 11px 16px !important;
+      margin-bottom: 14px !important;
     }
     .cat-row button { flex: 0 0 auto; }
 
@@ -117,14 +123,18 @@
 
   <div class="header-bar">
   <header class="site-header" style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;padding:18px 28px;max-width:1240px;margin:0 auto">
+    <button class="nav-toggle" onClick="{{ openNav }}" aria-label="Abrir menu" style="display:none;border:0;cursor:pointer;background:rgba(252,246,224,0.1);border-radius:999px;width:40px;height:40px;padding:0;flex-direction:column;align-items:center;justify-content:center;gap:4px">
+      <span style="width:5px;height:5px;border-radius:999px;background:#FCF6E0"></span>
+      <span style="width:5px;height:5px;border-radius:999px;background:#FCF6E0"></span>
+      <span style="width:5px;height:5px;border-radius:999px;background:#FCF6E0"></span>
+    </button>
     <div class="brand" style="background:#FCF6E0;border-radius:12px;padding:7px 12px;display:flex;align-items:center">
       <img src="assets/logo-no-background.png" alt="Mouro's Dog" class="brand-img" style="height:52px;width:auto" />
     </div>
     <nav class="site-nav scroll-x" style="display:flex;gap:22px;flex-wrap:wrap;font-size:12.5px;letter-spacing:0.12em;font-weight:600;text-transform:uppercase">
-      <a href="#menu" style="color:#FCF6E0">Menu</a>
-      <a href="#menu" onClick="{{ pickEspeciais }}" style="color:#FCF6E0">Especiais</a>
-      <a href="#sobre" style="color:#FCF6E0">Sobre</a>
-      <a href="#lojas" style="color:#FCF6E0">Lojas</a>
+      <sc-for list="{{ navLinks }}" as="n" hint-placeholder-count="4">
+        <a href="{{ n.href }}" onClick="{{ n.go }}" style="color:#FCF6E0">{{ n.label }}</a>
+      </sc-for>
     </nav>
     <div class="header-spacer" style="flex:1 1 40px"></div>
     <div class="header-meta" style="font-size:11.5px;letter-spacing:0.1em;line-height:1.6;text-transform:uppercase;opacity:0.82;max-width:220px">
@@ -296,6 +306,26 @@
     </div>
   </footer>
 
+  <sc-if value="{{ navOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;z-index:55;display:flex;justify-content:flex-start">
+      <div onClick="{{ closeNav }}" style="position:absolute;inset:0;background:rgba(20,6,6,0.62)"></div>
+      <aside style="position:relative;width:min(282px,84%);height:100%;background:#FCF6E0;color:#2A1207;display:flex;flex-direction:column;box-shadow:8px 0 30px rgba(20,6,6,0.4)">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;border-bottom:1px solid rgba(42,18,7,0.14)">
+          <img src="assets/logo-no-background.png" alt="Mouro's Dog" style="height:40px;width:auto" />
+          <button onClick="{{ closeNav }}" aria-label="Fechar menu" style="border:0;cursor:pointer;background:#2A1207;color:#FCF6E0;width:32px;height:32px;border-radius:999px;font-family:inherit;font-size:15px;line-height:1;flex:0 0 auto">&times;</button>
+        </div>
+        <nav style="display:flex;flex-direction:column;padding:8px 10px">
+          <sc-for list="{{ navLinks }}" as="n" hint-placeholder-count="4">
+            <a href="{{ n.href }}" onClick="{{ n.go }}" style="color:#2A1207;padding:14px 12px;border-radius:10px;font-size:15px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase" style-hover="background:rgba(42,18,7,0.08)">{{ n.label }}</a>
+          </sc-for>
+        </nav>
+        <div style="margin-top:auto;padding:18px;border-top:1px solid rgba(42,18,7,0.14);font-size:12px;line-height:1.6;letter-spacing:0.08em;text-transform:uppercase;opacity:0.6">
+          Porto Alegre &middot; RS<br />3 lojas &middot; desde 2013
+        </div>
+      </aside>
+    </div>
+  </sc-if>
+
   <sc-if value="{{ hasItems }}" hint-placeholder-val="{{ true }}">
     <div class="mob-bar" style="position:fixed;left:0;right:0;bottom:0;z-index:40;background:#FCF6E0;color:#2A1207;padding:11px 16px 15px;align-items:center;gap:14px;box-shadow:0 -8px 26px rgba(20,6,6,0.4)">
       <div style="flex:1;min-width:0">
@@ -362,6 +392,14 @@ const STORES = [
 
 const CATS = ['Tradicionais', 'Especiais', 'Veggie', 'Porções', 'Bebidas'];
 
+// Um unico lugar para os links: o topo (desktop) e a gaveta (celular) leem daqui.
+const NAV = [
+  { label: 'Menu', href: '#menu', cat: null },
+  { label: 'Especiais', href: '#menu', cat: 'Especiais' },
+  { label: 'Sobre', href: '#sobre', cat: null },
+  { label: 'Lojas', href: '#lojas', cat: null }
+];
+
 const MENU = [
   { id: 't0', cat: 'Tradicionais', name: 'Mouro Véio Duplo Salsicha', price: 24.5, img: 'assets/dog-25.jpeg', desc: 'Pão 100g, 2 salsichas, milho, ervilha, molho, ketchup, mostarda, batata palha e maionese.' },
   { id: 't1', cat: 'Tradicionais', name: 'Nº 1', price: 18, img: 'assets/dog-14.jpeg', desc: 'Pão 100g, 1 salsicha, tomate, cebola, molho, ovo, salsa, mostarda e maionese.' },
@@ -413,7 +451,16 @@ const MENU = [
 const fmt = (n) => 'R$ ' + n.toFixed(2).replace('.', ',');
 
 class Component extends DCLogic {
-  state = { store: null, cat: 'Tradicionais', cart: {}, cartOpen: false, note: '' };
+  state = { store: null, cat: 'Tradicionais', cart: {}, cartOpen: false, navOpen: false, note: '' };
+
+  // Rola ate uma secao descontando a faixa fixa, que so existe no desktop.
+  scrollToId(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const bar = document.querySelector('.header-bar');
+    const off = bar && getComputedStyle(bar).position === 'sticky' ? bar.offsetHeight + 14 : 14;
+    window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - off, behavior: 'smooth' });
+  }
 
   bump(id, d) {
     this.setState((s) => {
@@ -430,9 +477,8 @@ class Component extends DCLogic {
     if (!ids.length) return;
     const s = STORES.find((x) => x.id === store);
     if (!s) {
-      const el = document.getElementById('lojas');
-      if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 20, behavior: 'smooth' });
       this.setState({ cartOpen: false });
+      this.scrollToId('lojas');
       return;
     }
     let total = 0;
@@ -454,7 +500,7 @@ class Component extends DCLogic {
     const stores = STORES.map((s) => {
       const on = s.id === store;
       return Object.assign({}, s, {
-        pick: () => this.setState({ store: s.id }),
+        pick: () => { this.setState({ store: s.id }); this.scrollToId('menu'); },
         cardStyle: 'cursor:pointer;text-align:left;font-family:inherit;color:#FCF6E0;border-radius:16px;padding:16px 17px;border:1.5px solid ' + (on ? '#C9F24D' : 'rgba(252,246,224,0.22)') + ';background:' + (on ? 'rgba(201,242,77,0.14)' : 'rgba(252,246,224,0.05)'),
         dotStyle: 'width:11px;height:11px;border-radius:999px;flex:0 0 auto;background:' + (on ? '#C9F24D' : 'transparent') + ';border:1.5px solid ' + (on ? '#C9F24D' : 'rgba(252,246,224,0.5)')
       });
@@ -517,7 +563,13 @@ class Component extends DCLogic {
       checkoutLabel: ids.length === 0 ? 'Adicione um item' : (sel ? 'Enviar pedido no WhatsApp' : 'Escolha a loja primeiro'),
       checkoutStyle: 'border:0;width:100%;border-radius:999px;padding:16px;font-family:inherit;font-size:13px;font-weight:900;letter-spacing:0.1em;text-transform:uppercase;cursor:' + (ids.length ? 'pointer' : 'default') + ';background:' + (ready ? '#1EA34B' : (ids.length ? '#E8940D' : 'rgba(42,18,7,0.16)')) + ';color:' + (ids.length ? (ready ? '#fff' : '#2A1207') : 'rgba(42,18,7,0.5)'),
       checkout: this.checkout,
-      pickEspeciais: () => this.setState({ cat: 'Especiais' }),
+      navLinks: NAV.map((n) => ({
+        label: n.label, href: n.href,
+        go: () => this.setState(n.cat ? { cat: n.cat, navOpen: false } : { navOpen: false })
+      })),
+      navOpen: this.state.navOpen,
+      openNav: () => this.setState({ navOpen: true }),
+      closeNav: () => this.setState({ navOpen: false }),
       openCart: () => this.setState({ cartOpen: true }),
       closeCart: () => this.setState({ cartOpen: false }),
       setNote: (e) => this.setState({ note: e.target.value })
