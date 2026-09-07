@@ -3,8 +3,11 @@ sheet.png
 uploads/
 .thumbnail
 
+# Vercel / segredos
+.vercel
+.env*
+
 # Sistema / editor
 .DS_Store
 Thumbs.db
 node_modules/
-.vercel
