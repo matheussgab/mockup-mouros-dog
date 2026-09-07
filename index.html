@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#5C0B0B">
+<title>Mouro's Dog — o melhor dog aberto de POA</title>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -18,46 +20,114 @@
   a:hover { color: #C9F24D; }
   img { display: block; }
   ::selection { background: #C9F24D; color: #2A1207; }
+
+  /* Barra de pedido fixa: existe apenas no celular. */
+  .mob-bar { display: none; }
+
+  /* Trilhos com rolagem lateral (nav e filtros) sem barra visivel. */
+  .scroll-x { scrollbar-width: none; -ms-overflow-style: none; }
+  .scroll-x::-webkit-scrollbar { display: none; }
+
+  /* --------------------------------------------------------------
+     Ajustes de celular. Tudo aqui e' !important porque os estilos da
+     pagina sao inline e teriam precedencia. O desktop nao e' tocado:
+     nenhuma regra fora deste bloco altera o layout existente.
+     -------------------------------------------------------------- */
+  @media (max-width: 720px) {
+    .pad-x { padding-left: 16px !important; padding-right: 16px !important; }
+
+    .site-header { padding: 14px 16px !important; gap: 10px !important; }
+    .brand { order: 1; padding: 5px 9px !important; }
+    .brand-img { height: 40px !important; }
+    .header-spacer { order: 2; }
+    .cart-btn { order: 2; padding: 10px 15px !important; font-size: 11px !important; }
+    .header-meta { display: none !important; }
+    .site-nav {
+      order: 3; width: 100%; flex-wrap: nowrap !important;
+      overflow-x: auto; gap: 20px !important; padding-bottom: 2px;
+    }
+    .site-nav a { flex: 0 0 auto; }
+
+    .hero-grid { grid-template-columns: 1fr !important; gap: 20px !important; }
+    .hero-title { font-size: clamp(40px, 12.2vw, 66px) !important; }
+
+    /* Filtros viram trilho horizontal em vez de quebrar em 3 linhas. */
+    .cat-row {
+      flex-wrap: nowrap !important; overflow-x: auto;
+      margin-left: -16px !important; margin-right: -16px !important;
+      padding: 0 16px 2px !important;
+    }
+    .cat-row button { flex: 0 0 auto; }
+
+    /* Uma coluna, independente do cardMinWidth escolhido nas props. */
+    .menu-grid, .stores-grid, .split-grid, .gallery-grid, .footer-grid {
+      grid-template-columns: 1fr !important;
+    }
+
+    /* Card do cardapio vira linha: foto a esquerda, texto a direita.
+       Em coluna unica a foto 4:3 ocupava ~250px de altura por item. */
+    .menu-grid { gap: 10px !important; }
+    .menu-card { flex-direction: row !important; gap: 12px !important; align-items: flex-start; }
+    .card-media { display: block !important; flex: 0 0 104px; width: 104px; }
+    .card-img { aspect-ratio: 1 / 1 !important; }
+    .card-body {
+      display: flex !important; flex-direction: column; gap: 7px;
+      flex: 1 1 auto; min-width: 0; align-self: stretch;
+    }
+    .card-body h4 { font-size: 16px !important; }
+    .card-body p { font-size: 12px !important; }
+
+    .section-gap { padding-top: 34px !important; }
+    .cta-box { padding: 26px 18px !important; }
+
+    .mob-bar { display: flex !important; }
+    /* Espaco para a barra fixa nao cobrir o rodape. */
+    .site-footer { padding-bottom: 96px !important; }
+  }
+
+  @media (max-width: 400px) {
+    .cta-strip { grid-template-columns: repeat(3, 1fr) !important; }
+  }
 </style>
 </helmet>
 <div style="background:#5C0B0B;color:#FCF6E0;min-height:100%;padding:0 0 0 0">
 
-  <header style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;padding:18px 28px;max-width:1240px;margin:0 auto">
-    <div style="background:#FCF6E0;border-radius:12px;padding:7px 12px;display:flex;align-items:center">
-      <img src="assets/logo.avif" alt="Mouro's Dog" style="height:34px;width:auto" />
+  <header class="site-header" style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;padding:18px 28px;max-width:1240px;margin:0 auto">
+    <div class="brand" style="background:#FCF6E0;border-radius:12px;padding:7px 12px;display:flex;align-items:center">
+      <img src="assets/logo-no-background.png" alt="Mouro's Dog" class="brand-img" style="height:52px;width:auto" />
     </div>
-    <nav style="display:flex;gap:22px;flex-wrap:wrap;font-size:12.5px;letter-spacing:0.12em;font-weight:600;text-transform:uppercase">
+    <nav class="site-nav scroll-x" style="display:flex;gap:22px;flex-wrap:wrap;font-size:12.5px;letter-spacing:0.12em;font-weight:600;text-transform:uppercase">
       <a href="#menu" style="color:#FCF6E0">Menu</a>
       <a href="#especiais" style="color:#FCF6E0">Especiais</a>
       <a href="#sobre" style="color:#FCF6E0">Sobre</a>
       <a href="#lojas" style="color:#FCF6E0">Lojas</a>
     </nav>
-    <div style="flex:1 1 40px"></div>
-    <div style="font-size:11.5px;letter-spacing:0.1em;line-height:1.6;text-transform:uppercase;opacity:0.82;max-width:220px">
+    <div class="header-spacer" style="flex:1 1 40px"></div>
+    <div class="header-meta" style="font-size:11.5px;letter-spacing:0.1em;line-height:1.6;text-transform:uppercase;opacity:0.82;max-width:220px">
       Porto Alegre &middot; RS<br />4 lojas &middot; desde 2013
     </div>
-    <button onClick="{{ openCart }}" style="border:0;cursor:pointer;background:#FCF6E0;color:#2A1207;border-radius:999px;padding:12px 20px;font-family:inherit;font-size:12px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;display:flex;align-items:center;gap:10px" style-hover="background:#C9F24D">
+    <button class="cart-btn" onClick="{{ openCart }}" style="border:0;cursor:pointer;background:#FCF6E0;color:#2A1207;border-radius:999px;padding:12px 20px;font-family:inherit;font-size:12px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;display:flex;align-items:center;gap:10px" style-hover="background:#C9F24D">
       <span>Meu pedido</span>
       <span style="background:#5C0B0B;color:#FCF6E0;border-radius:999px;min-width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px">{{ cartCount }}</span>
     </button>
   </header>
 
-  <section style="max-width:1240px;margin:0 auto;padding:10px 28px 0">
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:8px;align-items:center">
-      <h1 style="font-size:clamp(52px,8.4vw,124px);line-height:0.86;margin:0;font-weight:900;font-stretch:125%;letter-spacing:-0.02em;text-transform:uppercase;text-wrap:balance">O melhor dog aberto de POA.</h1>
+  <section class="pad-x" style="max-width:1240px;margin:0 auto;padding:10px 28px 0">
+    <div class="hero-grid" style="display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,0.85fr);gap:28px;align-items:center">
+      <h1 class="hero-title" style="font-size:clamp(38px,6.4vw,96px);line-height:0.88;margin:0;font-weight:900;font-stretch:125%;letter-spacing:-0.02em;text-transform:uppercase;text-wrap:balance;overflow-wrap:break-word">O melhor dog aberto de POA.</h1>
       <img src="assets/hero-dog.avif" alt="Cachorro-quente Mouro's Dog" style="width:100%;height:auto;border-radius:20px" />
     </div>
     <h2 style="text-align:center;font-size:clamp(26px,4.2vw,54px);line-height:1;margin:48px 0 8px;font-weight:900;font-stretch:118%;text-transform:uppercase;text-wrap:balance">Cada dog é uma refeição inteira</h2>
     <p style="text-align:center;max-width:620px;margin:0 auto;font-size:14.5px;line-height:1.6;opacity:0.85">Pão fresco, recheio até em cima e aquela maionese da casa. Escolha a loja, monte seu pedido e finalize direto no WhatsApp.</p>
   </section>
 
-  <section id="lojas" style="max-width:1240px;margin:0 auto;padding:40px 28px 0">
+  <section id="lojas" class="pad-x section-gap" style="max-width:1240px;margin:0 auto;padding:40px 28px 0">
     <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:16px">
       <span style="font-size:11.5px;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;background:#E8940D;color:#2A1207;border-radius:999px;padding:6px 12px">1</span>
       <h3 style="margin:0;font-size:clamp(20px,2.6vw,30px);font-weight:900;font-stretch:115%;text-transform:uppercase">Escolha a loja</h3>
       <span style="font-size:12.5px;opacity:0.72">o pedido vai para o WhatsApp dessa unidade</span>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px">
+    <div class="stores-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px">
       <sc-for list="{{ stores }}" as="s" hint-placeholder-count="4">
         <button onClick="{{ s.pick }}" style="{{ s.cardStyle }}" style-hover="border-color:#C9F24D">
           <div style="display:flex;align-items:center;gap:9px;margin-bottom:10px">
@@ -71,36 +141,47 @@
     </div>
   </section>
 
-  <section id="menu" style="max-width:1240px;margin:0 auto;padding:44px 28px 0">
+  <section id="menu" class="pad-x section-gap" style="max-width:1240px;margin:0 auto;padding:44px 28px 0">
     <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:18px">
       <span style="font-size:11.5px;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;background:#E8940D;color:#2A1207;border-radius:999px;padding:6px 12px">2</span>
       <h3 id="especiais" style="margin:0;font-size:clamp(20px,2.6vw,30px);font-weight:900;font-stretch:115%;text-transform:uppercase">Monte seu pedido</h3>
     </div>
-    <div style="display:flex;gap:9px;flex-wrap:wrap;margin-bottom:24px">
+    <div class="cat-row scroll-x" style="display:flex;gap:9px;flex-wrap:wrap;margin-bottom:24px">
       <sc-for list="{{ cats }}" as="c" hint-placeholder-count="5">
         <button onClick="{{ c.pick }}" style="{{ c.style }}">{{ c.label }}</button>
       </sc-for>
     </div>
 
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax({{ cardMin }}px,1fr));gap:16px">
+    <div class="menu-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax({{ cardMin }}px,1fr));gap:16px">
       <sc-for list="{{ items }}" as="it" hint-placeholder-count="6">
-        <article style="background:#FCF6E0;color:#2A1207;border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px">
-          <sc-if value="{{ it.img }}" hint-placeholder-val="{{ true }}">
-            <img src="{{ it.img }}" alt="{{ it.name }}" style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px;background:#EFE4C4" />
-          </sc-if>
-          <h4 style="margin:0;font-size:19px;font-weight:900;font-stretch:110%;line-height:1.05">{{ it.name }}</h4>
-          <div style="font-size:17px;font-weight:800;color:#8A1B10">{{ it.priceLabel }}</div>
-          <p style="margin:0;font-size:12.5px;line-height:1.55;opacity:0.78;flex:1">{{ it.desc }}</p>
-          <sc-if value="{{ it.inCart }}" hint-placeholder-val="{{ false }}">
-            <div style="display:flex;align-items:center;gap:10px;background:#5C0B0B;border-radius:999px;padding:6px 8px;color:#FCF6E0">
-              <button onClick="{{ it.dec }}" style="border:0;cursor:pointer;width:30px;height:30px;border-radius:999px;background:#FCF6E0;color:#5C0B0B;font-family:inherit;font-size:18px;font-weight:800;line-height:1">&minus;</button>
-              <span style="flex:1;text-align:center;font-size:12.5px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase">{{ it.qtyLabel }}</span>
-              <button onClick="{{ it.inc }}" style="border:0;cursor:pointer;width:30px;height:30px;border-radius:999px;background:#C9F24D;color:#2A1207;font-family:inherit;font-size:18px;font-weight:800;line-height:1">+</button>
-            </div>
-          </sc-if>
-          <sc-if value="{{ it.notInCart }}" hint-placeholder-val="{{ true }}">
-            <button onClick="{{ it.inc }}" style="border:0;cursor:pointer;width:100%;background:#5C0B0B;color:#FCF6E0;border-radius:999px;padding:11px 14px;font-family:inherit;font-size:12px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase" style-hover="background:#8A1B10">Adicionar</button>
-          </sc-if>
+        <article class="menu-card" style="background:#FCF6E0;color:#2A1207;border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px">
+          <!-- display:contents mantem o desktop exatamente como era; so o
+               celular transforma media/body em duas colunas lado a lado. -->
+          <div class="card-media" style="display:contents">
+            <sc-if value="{{ it.img }}" hint-placeholder-val="{{ true }}">
+              <img class="card-img" src="{{ it.img }}" alt="{{ it.name }}" loading="lazy" style="{{ it.imgStyle }}" />
+            </sc-if>
+            <sc-if value="{{ it.noImg }}" hint-placeholder-val="{{ false }}">
+              <div class="card-img" style="width:100%;aspect-ratio:4/3;border-radius:10px;background:#EFE4C4;display:flex;align-items:center;justify-content:center;overflow:hidden">
+                <img src="assets/logo-no-background.png" alt="" loading="lazy" style="width:58%;height:auto;opacity:0.4" />
+              </div>
+            </sc-if>
+          </div>
+          <div class="card-body" style="display:contents">
+            <h4 style="margin:0;font-size:19px;font-weight:900;font-stretch:110%;line-height:1.05">{{ it.name }}</h4>
+            <div style="font-size:17px;font-weight:800;color:#8A1B10">{{ it.priceLabel }}</div>
+            <p style="margin:0;font-size:12.5px;line-height:1.55;opacity:0.78;flex:1">{{ it.desc }}</p>
+            <sc-if value="{{ it.inCart }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;align-items:center;gap:10px;background:#5C0B0B;border-radius:999px;padding:6px 8px;color:#FCF6E0">
+                <button onClick="{{ it.dec }}" style="border:0;cursor:pointer;width:30px;height:30px;border-radius:999px;background:#FCF6E0;color:#5C0B0B;font-family:inherit;font-size:18px;font-weight:800;line-height:1">&minus;</button>
+                <span style="flex:1;text-align:center;font-size:12.5px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase">{{ it.qtyLabel }}</span>
+                <button onClick="{{ it.inc }}" style="border:0;cursor:pointer;width:30px;height:30px;border-radius:999px;background:#C9F24D;color:#2A1207;font-family:inherit;font-size:18px;font-weight:800;line-height:1">+</button>
+              </div>
+            </sc-if>
+            <sc-if value="{{ it.notInCart }}" hint-placeholder-val="{{ true }}">
+              <button onClick="{{ it.inc }}" style="border:0;cursor:pointer;width:100%;background:#5C0B0B;color:#FCF6E0;border-radius:999px;padding:11px 14px;font-family:inherit;font-size:12px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase" style-hover="background:#8A1B10">Adicionar</button>
+            </sc-if>
+          </div>
         </article>
       </sc-for>
     </div>
@@ -115,12 +196,12 @@
     </div>
   </section>
 
-  <section style="max-width:1240px;margin:0 auto;padding:56px 28px 0">
+  <section class="pad-x section-gap" style="max-width:1240px;margin:0 auto;padding:56px 28px 0">
     <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-bottom:14px">
       <h3 style="margin:0;font-size:clamp(22px,3vw,34px);font-weight:900;font-stretch:115%;text-transform:uppercase">Por dentro do dog</h3>
       <span style="font-size:clamp(22px,3vw,34px);font-weight:900;font-stretch:115%">35+</span>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px">
+    <div class="gallery-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px">
       <div style="position:relative;border-radius:16px;overflow:hidden">
         <img src="assets/dog-34.jpeg" alt="Dog especial cortado ao meio" style="width:100%;aspect-ratio:4/3;object-fit:cover" />
         <div style="position:absolute;left:14px;bottom:14px;background:#16241C;color:#FCF6E0;border-radius:10px;padding:11px 14px">
@@ -138,8 +219,8 @@
     </div>
   </section>
 
-  <section id="sobre" style="max-width:1240px;margin:0 auto;padding:56px 28px 0">
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:28px;align-items:start">
+  <section id="sobre" class="pad-x section-gap" style="max-width:1240px;margin:0 auto;padding:56px 28px 0">
+    <div class="split-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:28px;align-items:start">
       <h3 style="margin:0;font-size:clamp(28px,4.4vw,58px);line-height:0.92;font-weight:900;font-stretch:120%;text-transform:uppercase;text-wrap:balance">A identidade do cachorro-quente aberto</h3>
       <div style="font-size:14.5px;line-height:1.7;opacity:0.88;display:flex;flex-direction:column;gap:14px">
         <p style="margin:0">O Mouro's Dog atua em Porto Alegre desde 2013 e hoje são quatro lojas na cidade. Servimos cachorro-quente aberto com um cardápio que vai da salsicha tradicional ao strogonoff.</p>
@@ -153,11 +234,11 @@
     </div>
   </section>
 
-  <section style="max-width:1240px;margin:0 auto;padding:56px 28px 0">
-    <div style="background:{{ ctaColor }};color:#2A1207;border-radius:22px;padding:clamp(28px,5vw,56px) clamp(20px,4vw,44px);text-align:center">
+  <section class="pad-x section-gap" style="max-width:1240px;margin:0 auto;padding:56px 28px 0">
+    <div class="cta-box" style="background:{{ ctaColor }};color:#2A1207;border-radius:22px;padding:clamp(28px,5vw,56px) clamp(20px,4vw,44px);text-align:center">
       <h3 style="margin:0 auto;max-width:760px;font-size:clamp(26px,4.6vw,54px);line-height:0.96;font-weight:900;font-stretch:120%;text-transform:uppercase;text-wrap:balance">Peça online ou venha comer na loja hoje</h3>
       <button onClick="{{ openCart }}" style="margin:22px 0 26px;border:0;cursor:pointer;background:#C9F24D;color:#2A1207;border-radius:999px;padding:15px 30px;font-family:inherit;font-size:13px;font-weight:900;letter-spacing:0.12em;text-transform:uppercase" style-hover="background:#2A1207;color:#C9F24D">Finalizar no WhatsApp</button>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:12px;max-width:760px;margin:0 auto">
+      <div class="cta-strip" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:12px;max-width:760px;margin:0 auto">
         <img src="assets/dog-25.jpeg" alt="Dog tradicional" style="width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:10px" />
         <img src="assets/dog-16.jpeg" alt="Dog com iscas de gado" style="width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:10px" />
         <img src="assets/dog-14.jpeg" alt="Dog com salsa" style="width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:10px" />
@@ -167,11 +248,11 @@
     </div>
   </section>
 
-  <footer style="background:#16241C;color:#FCF6E0;margin-top:56px;padding:44px 28px 26px">
-    <div style="max-width:1240px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:28px">
+  <footer class="site-footer pad-x" style="background:#16241C;color:#FCF6E0;margin-top:56px;padding:44px 28px 26px">
+    <div class="footer-grid" style="max-width:1240px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:28px">
       <div>
         <div style="background:#FCF6E0;border-radius:12px;padding:7px 12px;display:inline-flex;margin-bottom:14px">
-          <img src="assets/logo.avif" alt="Mouro's Dog" style="height:30px;width:auto" />
+          <img src="assets/logo-no-background.png" alt="Mouro's Dog" style="height:46px;width:auto" />
         </div>
         <div style="font-size:12.5px;line-height:1.65;opacity:0.75">Cachorro-quente aberto<br />Porto Alegre &middot; RS<br />Desde 2013</div>
       </div>
@@ -189,6 +270,16 @@
       <span>Pedidos finalizados no WhatsApp da loja</span>
     </div>
   </footer>
+
+  <sc-if value="{{ hasItems }}" hint-placeholder-val="{{ true }}">
+    <div class="mob-bar" style="position:fixed;left:0;right:0;bottom:0;z-index:40;background:#FCF6E0;color:#2A1207;padding:11px 16px 15px;align-items:center;gap:14px;box-shadow:0 -8px 26px rgba(20,6,6,0.4)">
+      <div style="flex:1;min-width:0">
+        <div style="font-size:10px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;opacity:0.6">{{ cartCountLabel }}</div>
+        <div style="font-size:20px;font-weight:900;font-stretch:112%;line-height:1.15">{{ totalLabel }}</div>
+      </div>
+      <button onClick="{{ openCart }}" style="border:0;cursor:pointer;flex:0 0 auto;background:#1EA34B;color:#fff;border-radius:999px;padding:14px 24px;font-family:inherit;font-size:12.5px;font-weight:900;letter-spacing:0.1em;text-transform:uppercase">Ver pedido</button>
+    </div>
+  </sc-if>
 
   <sc-if value="{{ cartOpen }}" hint-placeholder-val="{{ false }}">
     <div style="position:fixed;inset:0;z-index:50;display:flex;justify-content:flex-end">
@@ -271,24 +362,24 @@ const MENU = [
   { id: 'v2', cat: 'Veggie', name: 'Veggie 1 Salsicha', price: 29.5, img: 'assets/dog-26.jpeg', desc: 'Pão 100g. Salsicha de soja, tomate, cebola, molho, ovo, salsa, milho, ervilha, batata palha, queijo ralado, mostarda e maionese.' },
   { id: 'v3', cat: 'Veggie', name: 'Veggie 2 Salsichas', price: 36.5, img: 'assets/dog-29.jpeg', desc: 'Pão 100g. 2 salsichas de soja, tomate, cebola, molho, ovo, salsa, milho, ervilha, batata palha, queijo ralado, mostarda e maionese.' },
 
-  { id: 'p1', cat: 'Porções', name: 'Mini Fritas', price: 13.5, img: null, desc: 'Porção individual de batata frita.' },
-  { id: 'p2', cat: 'Porções', name: 'Fritas Média', price: 24.5, img: null, desc: 'Serve duas pessoas.' },
-  { id: 'p3', cat: 'Porções', name: 'Fritas Grande', price: 38.5, img: null, desc: 'Serve a mesa.' },
+  { id: 'p1', cat: 'Porções', name: 'Mini Fritas', price: 13.5, img: 'assets/fritas.jpg', desc: 'Porção individual de batata frita.' },
+  { id: 'p2', cat: 'Porções', name: 'Fritas Média', price: 24.5, img: 'assets/fritas.jpg', desc: 'Serve duas pessoas.' },
+  { id: 'p3', cat: 'Porções', name: 'Fritas Grande', price: 38.5, img: 'assets/fritas.jpg', desc: 'Serve a mesa.' },
 
-  { id: 'b1', cat: 'Bebidas', name: 'Refri Lata', price: 6, img: null, desc: 'Coca-Cola, Coca Zero, Fanta Uva, Fanta Laranja, Sprite ou Guaraná Kuat.' },
-  { id: 'b2', cat: 'Bebidas', name: 'Refri 600 ml', price: 8, img: null, desc: 'Coca-Cola, Coca Zero, Fanta Laranja, Sprite ou Guaraná Kuat.' },
-  { id: 'b3', cat: 'Bebidas', name: 'Refri 2 Litros', price: 15, img: null, desc: 'Coca-Cola, Coca Zero, Fanta Uva, Fanta Laranja, Sprite ou Guaraná Kuat.' },
-  { id: 'b4', cat: 'Bebidas', name: 'Suco Lata Del Valle', price: 6, img: null, desc: 'Uva ou pêssego.' },
+  { id: 'b1', cat: 'Bebidas', name: 'Refri Lata', price: 6, img: 'assets/refri-lata.jpeg', desc: 'Coca-Cola, Coca Zero, Fanta Uva, Fanta Laranja, Sprite ou Guaraná Kuat.' },
+  { id: 'b2', cat: 'Bebidas', name: 'Refri 600 ml', price: 8, img: 'assets/refri-600.jpeg', desc: 'Coca-Cola, Coca Zero, Fanta Laranja, Sprite ou Guaraná Kuat.' },
+  { id: 'b3', cat: 'Bebidas', name: 'Refri 2 Litros', price: 15, img: 'assets/refri-2l.jpeg', desc: 'Coca-Cola, Coca Zero, Fanta Uva, Fanta Laranja, Sprite ou Guaraná Kuat.' },
+  { id: 'b4', cat: 'Bebidas', name: 'Suco Lata Del Valle', price: 6, img: 'assets/del-valle-lata.jpeg', desc: 'Uva ou pêssego.' },
   { id: 'b5', cat: 'Bebidas', name: 'Água Mineral', price: 4, img: null, desc: 'Com ou sem gás.' },
-  { id: 'b6', cat: 'Bebidas', name: 'Skol Latão', price: 8.5, img: null, desc: 'Cerveja 473ml.', alcohol: true },
-  { id: 'b7', cat: 'Bebidas', name: 'Polar Latão', price: 8.5, img: null, desc: 'Cerveja 473ml.', alcohol: true },
-  { id: 'b8', cat: 'Bebidas', name: 'Heineken Long Neck', price: 14, img: null, desc: 'Cerveja 330ml.', alcohol: true },
-  { id: 'b9', cat: 'Bebidas', name: 'Budweiser Long Neck', price: 10, img: null, desc: 'Cerveja 330ml.', alcohol: true },
+  { id: 'b6', cat: 'Bebidas', name: 'Skol Latão', price: 8.5, img: 'assets/skol.jpeg', desc: 'Cerveja 473ml.', alcohol: true },
+  { id: 'b7', cat: 'Bebidas', name: 'Polar Latão', price: 8.5, img: 'assets/polar.jpeg', desc: 'Cerveja 473ml.', alcohol: true },
+  { id: 'b8', cat: 'Bebidas', name: 'Heineken Long Neck', price: 14, img: 'assets/heineken-long.jpeg', desc: 'Cerveja 330ml.', alcohol: true },
+  { id: 'b9', cat: 'Bebidas', name: 'Budweiser Long Neck', price: 10, img: 'assets/budweiser-long.jpeg', desc: 'Cerveja 330ml.', alcohol: true },
   { id: 'b10', cat: 'Bebidas', name: 'Budweiser 550ml', price: 14, img: null, desc: 'Cerveja garrafa.', alcohol: true },
-  { id: 'b11', cat: 'Bebidas', name: 'Amstel 600ml', price: 14, img: null, desc: 'Cerveja garrafa.', alcohol: true },
+  { id: 'b11', cat: 'Bebidas', name: 'Amstel 600ml', price: 14, img: 'assets/amstel-600.jpeg', desc: 'Cerveja garrafa.', alcohol: true },
   { id: 'b12', cat: 'Bebidas', name: 'Brahma Duplo Malte 600ml', price: 14, img: null, desc: 'Cerveja garrafa.', alcohol: true },
-  { id: 'b13', cat: 'Bebidas', name: 'Original 600ml', price: 18, img: null, desc: 'Cerveja garrafa.', alcohol: true },
-  { id: 'b14', cat: 'Bebidas', name: 'Heineken 600ml', price: 18, img: null, desc: 'Cerveja garrafa.', alcohol: true },
+  { id: 'b13', cat: 'Bebidas', name: 'Original 600ml', price: 18, img: 'assets/original-600.jpg', desc: 'Cerveja garrafa.', alcohol: true },
+  { id: 'b14', cat: 'Bebidas', name: 'Heineken 600ml', price: 18, img: 'assets/heineken-600.webp', desc: 'Cerveja garrafa.', alcohol: true },
 
   { id: 'a1', cat: 'Adicionais', name: 'Cheddar', price: 3.5, img: null, desc: 'Adicional.' },
   { id: 'a2', cat: 'Adicionais', name: 'Queijo ralado', price: 3.5, img: null, desc: 'Adicional.' },
@@ -353,8 +444,14 @@ class Component extends DCLogic {
 
     const items = MENU.filter((m) => m.cat === cat && (showAlcohol || !m.alcohol)).map((m) => {
       const q = cart[m.id] || 0;
+      // Bebidas sao fotos de produto em fundo claro: 'contain' preserva a
+      // garrafa inteira, enquanto 'cover' cortaria o gargalo e a base.
+      const drink = m.cat === 'Bebidas';
       return {
-        id: m.id, name: m.name, desc: m.desc, img: m.img,
+        id: m.id, name: m.name, desc: m.desc, img: m.img, noImg: !m.img,
+        imgStyle: 'width:100%;aspect-ratio:4/3;border-radius:10px;' + (drink
+          ? 'object-fit:contain;background:#fff;padding:8px'
+          : 'object-fit:cover;background:#EFE4C4'),
         priceLabel: fmt(m.price),
         qty: q, qtyLabel: q + (q > 1 ? ' itens' : ' item'),
         inCart: q > 0, notInCart: q === 0,
@@ -382,10 +479,13 @@ class Component extends DCLogic {
     });
 
     const ready = ids.length > 0 && !!sel;
+    const count = ids.reduce((a, id) => a + cart[id], 0);
     return {
       stores, cats, items, extras, lines, cardMin, note,
       ctaColor: this.props.ctaColor ?? '#E8940D',
-      cartCount: ids.reduce((a, id) => a + cart[id], 0),
+      cartCount: count,
+      cartCountLabel: count + (count === 1 ? ' item no pedido' : ' itens no pedido'),
+      hasItems: ids.length > 0,
       cartOpen: this.state.cartOpen,
       empty: ids.length === 0,
       totalLabel: fmt(total),
