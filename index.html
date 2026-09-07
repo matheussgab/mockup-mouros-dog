@@ -122,11 +122,11 @@
     .section-gap { padding-top: 34px !important; }
     .cta-box { padding: 26px 18px !important; }
 
-    /* Menor e acima da barra de pedido, para nao cobrir o total nem o botao.
-       Em 390px nao existe margem livre: parado ele cobriria o texto, entao
-       no celular so aparece durante a animacao do "adicionar". */
-    .mascot { width: 76px; right: 10px; bottom: 88px; }
-    .mascot-idle { display: none !important; }
+    /* Menor que no desktop e acima da barra de pedido, para nao cobrir o
+       total nem o botao. Fica sempre visivel (parado na pose padrao) e so
+       troca pelo gif durante a animacao do "adicionar". O bottom nao muda
+       quando a barra de pedido aparece, entao ele nao pula de lugar. */
+    .mascot { width: 56px; right: 10px; bottom: 88px; }
 
     .mob-bar { display: flex !important; }
     /* Espaco para a barra fixa nao cobrir o rodape. */
